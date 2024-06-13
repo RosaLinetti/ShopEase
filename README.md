@@ -17,6 +17,5 @@ Stores user data and history in text files for persistence.
 Technologies Used:
 C++ for backend logic.
 Standard libraries for file handling and string manipulation.
-Screenshots/Demo:
 
 Contributions are welcome! Fork the repository and submit pull requests for enhancements.
