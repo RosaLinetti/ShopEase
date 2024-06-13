@@ -184,8 +184,7 @@ int main() {
     std::string username;
     std::vector<std::string> inventory = {"apple", "banana", "bread", "milk", "eggs", "cheese", "juice"};
 
-    bool exitApp = false;
-    while (!exitApp) {
+    while (true) {
         std::cout << "Welcome to the Shopping System!\n";
         std::cout << "1. Login\n";
         std::cout << "2. Sign up\n";
@@ -256,8 +255,8 @@ int main() {
                 break;
             }
             case EXIT_CHOICE: {
-                exitApp = true;
-                break;
+                std::cout << "Exiting the program. Goodbye!\n";
+                return 0;
             }
             default: {
                 std::cout << "Invalid choice. Please try again.\n";
