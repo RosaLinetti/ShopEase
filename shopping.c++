@@ -65,7 +65,7 @@ void signup(std::string& username) {
 }
 
 // Function to manage inventory
-void manageInventory(std::vector<std::string>& inventory) {
+void manageInventory(std::string& username, std::vector<std::string>& inventory) {
     const int ADD_ITEM_CHOICE = 1;
     const int REMOVE_ITEM_CHOICE = 2;
     const int LIST_ITEMS_CHOICE = 3;
@@ -96,7 +96,7 @@ void manageInventory(std::vector<std::string>& inventory) {
                 std::cin >> item;
                 auto it = std::find_if(inventory.begin(), inventory.end(),
                                       [item](const std::string& invItem) { return toLowerCase(invItem) == toLowerCase(item); });
-                if (it != inventory.end()) {
+                if (it!= inventory.end()) {
                     inventory.erase(it);
                     std::cout << "Item removed successfully.\n";
                 } else {
@@ -133,9 +133,6 @@ void processShopping(const std::string& username, const std::vector<std::string>
         if (item == "remove" &&!shoppingList.empty()) {
             shoppingList.pop_back();
             std::cout << "Last item removed. Current list:\n";
-            for (const auto& i : shoppingList) {
-std::cout << "- " << i << "\n";
-            }
             continue;
         }
         shoppingList.push_back(item);
@@ -144,8 +141,8 @@ std::cout << "- " << i << "\n";
     std::cout << "\nChecking availability:\n";
     for (const auto& item : shoppingList) {
         bool available = std::find_if(inventory.begin(), inventory.end(),
-                                      [item](const std::string& invItem) { return toLowerCase(invItem) == toLowerCase(item); })!= inventory.end();
-        std::cout << item << ": " << (available? "Available" : "Not available") << "\n";
+                                      [item](const std::string& invItem) { return toLowerCase(invItem) == toLowerCase(item); }) != inventory.end();
+        std::cout << item << ": " << (available ? "Available" : "Not available") << "\n";
     }
 
     std::ofstream file(username + "_history.txt", std::ios_base::app);
@@ -187,8 +184,8 @@ int main() {
     std::string username;
     std::vector<std::string> inventory = {"apple", "banana", "bread", "milk", "eggs", "cheese", "juice"};
 
-    int choice;
-    while (true) {
+    bool exitApp = false;
+    while (!exitApp) {
         std::cout << "Welcome to the Shopping System!\n";
         std::cout << "1. Login\n";
         std::cout << "2. Sign up\n";
@@ -196,19 +193,21 @@ int main() {
         std::cout << "4. Manage inventory\n";
         std::cout << "5. Exit\n";
         std::cout << "Enter your choice: ";
+        int choice;
         std::cin >> choice;
 
         switch (choice) {
             case LOGIN_CHOICE: {
                 login(username);
                 if (!username.empty()) {
-                    int subChoice;
-                    while (true) {
+                    bool exitSubMenu = false;
+                    while (!exitSubMenu) {
                         std::cout << "1. Process shopping\n";
                         std::cout << "2. View shopping history\n";
                         std::cout << "3. Manage inventory\n";
                         std::cout << "4. Exit\n";
                         std::cout << "Enter your choice: ";
+                        int subChoice;
                         std::cin >> subChoice;
 
                         switch (subChoice) {
@@ -221,11 +220,11 @@ int main() {
                                 break;
                             }
                             case 3: {
-                                manageInventory(inventory);
+                                manageInventory(username, inventory);
                                 break;
                             }
                             case 4: {
-                                username = "";
+                                exitSubMenu = true;
                                 break;
                             }
                             default: {
@@ -241,15 +240,24 @@ int main() {
                 break;
             }
             case VIEW_HISTORY_CHOICE: {
-                viewHistory(username);
+                if (!username.empty()) {
+                    viewHistory(username);
+                } else {
+                    std::cout << "Please login or sign up before viewing shopping history.\n";
+                }
                 break;
             }
             case MANAGE_INVENTORY_CHOICE: {
-                manageInventory(inventory);
+                if (!username.empty()) {
+                    manageInventory(username, inventory);
+                } else {
+                    std::cout << "Please login or sign up before managing inventory.\n";
+                }
                 break;
             }
             case EXIT_CHOICE: {
-                return 0;
+                exitApp = true;
+                break;
             }
             default: {
                 std::cout << "Invalid choice. Please try again.\n";
